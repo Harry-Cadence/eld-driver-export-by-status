@@ -8,13 +8,13 @@ import os
 
 # Configure Streamlit page
 st.set_page_config(
-    page_title="ELD Data Export",
+    page_title="Export The List by ELD Status",
     page_icon="🚛",
     layout="centered"
 )
 
-st.title("🚛 ELD Data Export")
-st.write("Export driver data filtered by current status")
+st.title("🚛 Export The List by ELD Status")
+st.write("Export driver and truck data filtered by current status in ELD")
 load_dotenv()
 
 try:
@@ -95,7 +95,7 @@ col1, col2, col3, col4 = st.columns(4)
 # Button handlers
 with col1:
     if st.button("🚗 Driving", use_container_width=True):
-        with st.spinner("Fetching data..."):
+        with st.spinner("Fetching data from L&T ELD..."):
             data = fetch_eld_data()
             if data:
                 filtered_data = filter_data_by_status(data, 'Driving')
@@ -115,7 +115,7 @@ with col1:
 
 with col2:
     if st.button("😴 Off Duty", use_container_width=True):
-        with st.spinner("Fetching data..."):
+        with st.spinner("Fetching data from L&T ELD..."):
             data = fetch_eld_data()
             if data:
                 filtered_data = filter_data_by_status(data, 'Off Duty')
@@ -135,7 +135,7 @@ with col2:
 
 with col3:
     if st.button("⚡ On Duty", use_container_width=True):
-        with st.spinner("Fetching data..."):
+        with st.spinner("Fetching data from L&T ELD..."):
             data = fetch_eld_data()
             if data:
                 filtered_data = filter_data_by_status(data, 'On Duty')
@@ -155,7 +155,7 @@ with col3:
 
 with col4:
     if st.button("🛏️ SB", use_container_width=True):
-        with st.spinner("Fetching data..."):
+        with st.spinner("Fetching data from L&T ELD..."):
             data = fetch_eld_data()
             if data:
                 filtered_data = filter_data_by_status(data, 'SB')
@@ -174,39 +174,39 @@ with col4:
                     st.warning("No drivers found with SB status")
 
 # Add some spacing and information
-st.markdown("---")
-st.markdown("""
-### 📋 Export Information
-- **First Name**: Driver's first name
-- **Last Name**: Driver's last name  
-- **Phone Number**: Driver's contact number
-- **Vehicle Display ID**: Vehicle identifier
-- **Log Status**: Current driver status
+# st.markdown("---")
+# st.markdown("""
+# ### 📋 Export Information
+# - **First Name**: Driver's first name
+# - **Last Name**: Driver's last name  
+# - **Phone Number**: Driver's contact number
+# - **Vehicle Display ID**: Vehicle identifier
+# - **Log Status**: Current driver status
 
-### 🔧 Setup Instructions
-1. Replace `API_BASE_URL` with your actual API base URL
-2. Add authentication headers if required
-3. Install required packages: `pip install streamlit pandas requests openpyxl`
-4. Run with: `streamlit run app.py`
-""")
+# ### 🔧 Setup Instructions
+# 1. Replace `API_BASE_URL` with your actual API base URL
+# 2. Add authentication headers if required
+# 3. Install required packages: `pip install streamlit pandas requests openpyxl`
+# 4. Run with: `streamlit run app.py`
+# """)
 
-# Optional: Display current API status
-with st.expander("🔍 API Status Check"):
-    if st.button("Test API Connection"):
-        with st.spinner("Testing connection..."):
-            try:
-                url = f"{API_BASE_URL}{API_ENDPOINT}"
-                eld_headers = {
-                'X-Api-Key': ELD_API_KEY,
-                'Content-Type': 'application/json'
-                }
-                response = requests.get(url, headers=eld_headers)
-                if response.status_code == 200:
-                    st.success("✅ API connection successful")
-                    data = response.json()
-                    if 'Data' in data:
-                        st.info(f"📊 Total records available: {len(data['Data'])}")
-                else:
-                    st.error(f"❌ API returned status code: {response.status_code}")
-            except Exception as e:
-                st.error(f"❌ Connection failed: {str(e)}")
+# # Optional: Display current API status
+# with st.expander("🔍 API Status Check"):
+    # if st.button("Test API Connection"):
+    #     with st.spinner("Testing connection..."):
+    #         try:
+    #             url = f"{API_BASE_URL}{API_ENDPOINT}"
+    #             eld_headers = {
+    #             'X-Api-Key': ELD_API_KEY,
+    #             'Content-Type': 'application/json'
+    #             }
+    #             response = requests.get(url, headers=eld_headers)
+    #             if response.status_code == 200:
+    #                 st.success("✅ API connection successful")
+    #                 data = response.json()
+    #                 if 'Data' in data:
+    #                     st.info(f"📊 Total records available: {len(data['Data'])}")
+    #             else:
+    #                 st.error(f"❌ API returned status code: {response.status_code}")
+    #         except Exception as e:
+    #             st.error(f"❌ Connection failed: {str(e)}")
