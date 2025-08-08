@@ -230,7 +230,7 @@ st.markdown("---")
 
 # New section for vehicle conflicts
 st.markdown("### 🚨 List of Multiple Drivers Logged into Same Truck in ELD")
-st.write("Check for drivers who are assigned to the same vehicle (potential conflicts). Click below for list.")
+st.write("Check for drivers who logged into the same vehicle. It might affect the inaccurate assignment of truck for that driver in Samsara. Click below for list.")
 
 # Long button for vehicle conflicts
 if st.button("🔍 Find Vehicle Conflicts", use_container_width=True, type="secondary"):
