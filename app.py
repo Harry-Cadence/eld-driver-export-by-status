@@ -5,6 +5,7 @@ from io import BytesIO
 import json
 from dotenv import load_dotenv
 import os
+from duplicate import ELDDriver, ELDSync
 
 # Configure Streamlit page
 st.set_page_config(
@@ -172,6 +173,63 @@ with col4:
                     )
                 else:
                     st.warning("No drivers found with SB status")
+
+# Add spacing between sections
+st.markdown("---")
+
+# New section for vehicle conflicts
+st.markdown("### 🚨 Multiple Drivers Logged into Same Truck in ELD")
+st.write("Check for drivers who are assigned to the same vehicle (potential conflicts). Click below for list.")
+
+# Long button for vehicle conflicts
+if st.button("🔍 Find Vehicle Conflicts", use_container_width=True, type="secondary"):
+    with st.spinner("Analyzing vehicle assignments for conflicts..."):
+        try:
+            # Create ELDSync instance
+            sync = ELDSync(API_BASE_URL, ELD_API_KEY)
+            
+            # Fetch all drivers synchronously (better for Streamlit)
+            drivers = sync.fetch_eld_drivers_sync()
+            
+            if drivers:
+                # Find conflicts
+                incorrect_assignments = sync.find_vehicle_conflicts(drivers)
+                
+                if incorrect_assignments:
+                    # Create DataFrame for display
+                    conflict_data = []
+                    for driver in incorrect_assignments:
+                        conflict_data.append({
+                            'Driver ID': driver.driverID,
+                            'First Name': driver.firstName,
+                            'Last Name': driver.lastName,
+                            'Phone Number': driver.phoneNo,
+                            'Truck Number': driver.truckNo,
+                            'Drivers on Same Truck': driver.truckCount
+                        })
+                    
+                    df_conflicts = pd.DataFrame(conflict_data)
+                    
+                    st.success(f"Found {len(incorrect_assignments)} drivers with vehicle conflicts!")
+                    
+                    # Display the conflicts table
+                    st.dataframe(df_conflicts, use_container_width=True)
+                    
+                    # Create Excel file for download
+                    excel_file = create_excel_file(df_conflicts)
+                    st.download_button(
+                        label="📥 Download Vehicle Conflicts Report",
+                        data=excel_file,
+                        file_name="vehicle_conflicts.xlsx",
+                        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    )
+                else:
+                    st.success("✅ No vehicle conflicts found! All drivers are properly assigned.")
+            else:
+                st.error("Failed to fetch driver data from ELD system")
+                
+        except Exception as e:
+            st.error(f"Error analyzing vehicle conflicts: {str(e)}")
 
 # Add some spacing and information
 # st.markdown("---")
