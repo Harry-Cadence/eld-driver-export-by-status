@@ -14,8 +14,59 @@ st.set_page_config(
     layout="centered"
 )
 
+# Simple login system
+def check_login():
+    """Simple login check using secrets or environment variables"""
+    try:
+        # Try to get credentials from Streamlit secrets (for cloud deployment)
+        username = st.secrets.get("LOGIN_USERNAME", "admin")
+        password = st.secrets.get("LOGIN_PASSWORD", "admin321")
+    except:
+        # Fallback for local development - use environment variables or defaults
+        load_dotenv()
+        username = os.getenv("LOGIN_USERNAME", "admin")
+        password = os.getenv("LOGIN_PASSWORD", "admin321")
+    
+    return username, password
+
+def login_page():
+    """Display login form"""
+    st.title("ELD Export Report Tool")
+    st.markdown("## 🔐 Login Required")
+    st.write("Please enter your credentials to access the ELD Status Export Tool")
+    
+    with st.form("login_form"):
+        username_input = st.text_input("Username", key="username_input")
+        password_input = st.text_input("Password", type="password", key="password_input")
+        submit_button = st.form_submit_button("Login")
+        
+        if submit_button:
+            correct_username, correct_password = check_login()
+            if username_input == correct_username and password_input == correct_password:
+                st.session_state.authenticated = True
+                st.success("Login successful!")
+                st.rerun()
+            else:
+                st.error("Invalid username or password. Please try again.")
+
+# Check if user is authenticated
+if "authenticated" not in st.session_state:
+    st.session_state.authenticated = False
+
+# Show login page if not authenticated
+if not st.session_state.authenticated:
+    login_page()
+    st.stop()
+
+# Main app content (only shown after successful login)
 st.title("🚛 Export The List by ELD Status")
-st.write("Export driver and truck data filtered by current status in ELD")
+st.write("Export driver and truck data filtered by current status in L&T ELD")
+
+# Add logout button
+if st.sidebar.button("🚪 Logout"):
+    st.session_state.authenticated = False
+    st.rerun()
+
 load_dotenv()
 
 try:
@@ -178,7 +229,7 @@ with col4:
 st.markdown("---")
 
 # New section for vehicle conflicts
-st.markdown("### 🚨 Multiple Drivers Logged into Same Truck in ELD")
+st.markdown("### 🚨 List of Multiple Drivers Logged into Same Truck in ELD")
 st.write("Check for drivers who are assigned to the same vehicle (potential conflicts). Click below for list.")
 
 # Long button for vehicle conflicts
