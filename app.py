@@ -31,7 +31,7 @@ def check_login():
 
 def login_page():
     """Display login form"""
-    st.title("ELD Export Report Tool")
+    st.title("ELD Status Report Tool")
     st.markdown("## 🔐 Login Required")
     st.write("Please enter your credentials to access the ELD Status Export Tool")
     
