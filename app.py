@@ -133,6 +133,19 @@ def create_excel_dataframe(filtered_data):
     
     return pd.DataFrame(excel_data)
 
+def create_admin_tag_dataframe(filtered_data):
+    """Create DataFrame for Excel export"""
+    excel_data = []
+    
+    for item in filtered_data:
+        vehicle = item.get('Vehicle', {}) or {}
+        excel_data.append({
+            'adminTagName': vehicle.get('DisplayID', ''),
+        })
+    
+    return pd.DataFrame(excel_data)
+
+
 def create_excel_file(dataframe):
     """Create Excel file in memory"""
     output = BytesIO()
@@ -161,6 +174,16 @@ with col1:
                         data=excel_file,
                         file_name="driving_drivers.xlsx",
                         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    )
+                    
+                    # Download admin tag excel
+                    admin_tag_df = create_admin_tag_dataframe(filtered_data)
+                    admin_tag_csv = admin_tag_df.to_csv(index=False).encode('utf-8')
+                    st.download_button(
+                        label="📥 Download Admin Tag Report - Weguard",
+                        data=admin_tag_csv,
+                        file_name="driving_admin_tags.csv",
+                        mime="text/csv"
                     )
                 else:
                     st.warning("No drivers found with Driving status")
@@ -202,6 +225,17 @@ with col3:
                         file_name="on_duty_drivers.xlsx",
                         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                     )
+
+                    # Download admin tag excel
+                    admin_tag_df = create_admin_tag_dataframe(filtered_data)
+                    admin_tag_csv = admin_tag_df.to_csv(index=False).encode('utf-8')
+                    st.download_button(
+                        label="📥 Download Admin Tag Report",
+                        data=admin_tag_csv,
+                        file_name="driving_admin_tags.csv",
+                        mime="text/csv"
+                    )
+
                 else:
                     st.warning("No drivers found with On Duty status")
 
