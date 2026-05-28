@@ -91,7 +91,7 @@ def fetch_eld_data():
         'Content-Type': 'application/json'
         }
         
-        response = requests.get(url, headers=eld_headers, timeout=30)
+        response = requests.get(url, headers=eld_headers, timeout=180)
         response.raise_for_status()
         
         return response.json()
@@ -126,7 +126,6 @@ def create_excel_dataframe(filtered_data):
         excel_data.append({
             'First Name': driver.get('FirstName', ''),
             'Last Name': driver.get('LastName', ''),
-            'Phone Number': driver.get('PhoneNo', ''),
             'Vehicle Display ID': vehicle.get('DisplayID', ''),
             'Log Status': log.get('CurrentStatus', '')
         })
