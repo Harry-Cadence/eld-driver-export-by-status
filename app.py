@@ -9,7 +9,7 @@ from duplicate import ELDDriver, ELDSync
 
 # Configure Streamlit page
 st.set_page_config(
-    page_title="Lights & Travel ELD Analyzer",
+    page_title="COGO ELD Analyzer",
     page_icon="🚛",
     layout="centered"
 )
@@ -31,7 +31,7 @@ def check_login():
 
 def login_page():
     """Display login form"""
-    st.title("Lights & Travel ELD Analyzer")
+    st.title("COGO ELD Analyzer")
     st.markdown("## 🔐 Login Required")
     st.write("Please enter your credentials to access the ELD Analyzer")
     
@@ -59,7 +59,7 @@ if not st.session_state.authenticated:
     st.stop()
 
 # Main app content (only shown after successful login)
-st.title("🚛 Lights & Travel ELD Analyzer")
+st.title("🚛 COGO ELD Analyzer")
 st.write("Analyze ELD driver status, truck assignment conflicts, and username standards.")
 
 # Add logout button
@@ -175,7 +175,7 @@ def build_expected_username(row):
 
 
 def find_username_issues(drivers_df):
-    """Find usernames that do not follow the L&T ELD username standard."""
+    """Find usernames that do not follow the COGO ELD username standard."""
     required_columns = ["First Name", "Last Name", "Phone Number", "Username", "Notes"]
     missing_columns = [column for column in required_columns if column not in drivers_df.columns]
     if missing_columns:
@@ -208,7 +208,7 @@ def find_username_issues(drivers_df):
 
 def render_status_report():
     st.markdown("### 📊 Driver Status Export")
-    st.write("Export driver and truck data filtered by current status in L&T ELD.")
+    st.write("Export driver and truck data filtered by current status in COGO ELD.")
 
     status_buttons = [
         ("🚗 Driving", "Driving", "driving_drivers.xlsx"),
@@ -221,7 +221,7 @@ def render_status_report():
     for column, (label, status, file_name) in zip(columns, status_buttons):
         with column:
             if st.button(label, use_container_width=True):
-                with st.spinner("Fetching data from L&T ELD..."):
+                with st.spinner("Fetching data from COGO ELD..."):
                     data = fetch_eld_data()
                     if not data:
                         return
